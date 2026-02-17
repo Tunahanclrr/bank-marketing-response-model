@@ -2,6 +2,8 @@ from src.data_loader import load_data
 from src.preprocess import preprocess_data, build_preprocessor
 from src.trainer import train_model
 from src.evaluate import evaluate_model
+import joblib
+import os
 
 
 def main():
@@ -21,5 +23,15 @@ def main():
     print("All steps completed successfully.")
     print("All steps completed successfully.")
     
+    ## modeli kaydet
+    os.makedirs("models", exist_ok=True)
+
+    joblib.dump({
+        "model": pipe,
+        "threshold": results["best_threshold"]
+    }, "models/lgbm_pipeline.pkl")
+
+    print("Model models/lgbm_pipeline.pkl olarak kaydedildi ✅")
+    print("All steps completed successfully.")
 if __name__ == "__main__":
     main()

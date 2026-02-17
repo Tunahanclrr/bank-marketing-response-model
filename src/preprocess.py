@@ -14,11 +14,7 @@ def preprocess_data(df):
     df = df[df['campaign'] <= 9]
     print("Campaign filtering applied successfully.")
 
-    # Binary encoding
-    df['housing'] = df['housing'].map({'yes': 1, 'no': 0})
-    df['loan'] = df['loan'].map({'yes': 1, 'no': 0})
-    df['default'] = df['default'].map({'yes': 1, 'no': 0})
-    print("Binary encoding applied successfully.")
+    
 
     # X ve y ayrımı
     X = df.drop("y", axis=1)
@@ -47,13 +43,20 @@ def build_preprocessor(X_train):
     # Transformerlar
     numeric_transformer = StandardScaler()
     categorical_transformer = OneHotEncoder(handle_unknown='ignore', sparse_output=False)
+    ## binary kolonlar 
 
+    binary_cols = ['default', 'housing', 'loan']
+
+    binary_transformer = OrdinalEncoder(
+    categories=[['no', 'yes']] * len(binary_cols)
+    )
     # ColumnTransformer
     preprocessor = ColumnTransformer(
         transformers=[
             ('ord', OrdinalEncoder(categories=[education_order, month_order]), ['education', 'month']),
             ('cat', categorical_transformer, onehot_cols),
-            ('num', numeric_transformer, num_cols)
+            ('num', numeric_transformer, num_cols),
+            ('bin', binary_transformer, binary_cols)
         ],
         remainder='passthrough'  # Binary kolonlar direkt geçer
     )
